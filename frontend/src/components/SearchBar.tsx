@@ -38,7 +38,7 @@ export default function SearchBar({ onSelect }: { onSelect: (s: Suggestion) => v
           if (m) onSelect(m);
         }
       }}
-      sx={{ width: '80vw', maxWidth: 960, mx: 'auto' }}  // wide + centered
+      sx={{ width: '100%', maxWidth: 960, mx: 'auto' }}  // wide + centered
     />
   );
 }

@@ -1,23 +1,30 @@
 import { useState } from "react";
 import "./App.css";
 import SearchBar from "./components/SearchBar";
+import CropSelect, { type Crop } from "./components/CropSelect";
+import { useNavigate } from "react-router-dom";
 
 type Coords = { lat: number; lon: number };
 
 export default function App() {
   const [coords, setCoords] = useState<Coords | null>(null);
+  const [crop, setCrop] = useState<Crop>("corn");
+  const navigate = useNavigate();
 
   function useMyLocation() {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
-        },
-        () => {
-          console.log("Did not get user's location data");
-        }
+        (pos) => setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+        () => console.log("Did not get user's location data")
       );
     }
+  }
+
+  function goToAdvisory() {
+    if (!coords) return;
+    navigate(
+      `/advisory?lat=${coords.lat}&lon=${coords.lon}&crop=${encodeURIComponent(crop)}`
+    );
   }
 
   return (
@@ -64,9 +71,42 @@ export default function App() {
         </div>
       </header>
 
+      {/* Row 2: crop select + generate button */}
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            width: "80vw",
+            maxWidth: 960,
+            display: "flex",
+            gap: 12,
+            alignItems: "center",
+          }}
+        >
+          <CropSelect value={crop} onChange={setCrop} />
+
+          <button
+            onClick={goToAdvisory}
+            disabled={!coords}
+            style={{
+              padding: "10px 16px",
+              borderRadius: 8,
+              border: "none",
+              background: !coords ? "#cbd5e1" : "#16a34a",
+              color: "white",
+              fontWeight: 600,
+              cursor: !coords ? "not-allowed" : "pointer",
+              opacity: !coords ? 0.7 : 1,
+            }}
+            title={!coords ? "Pick a location first" : "Generate advisory"}
+          >
+            Generate advisory
+          </button>
+        </div>
+      </div>
+
       <main style={{ padding: "16px", maxWidth: 1100, margin: "0 auto" }}>
         <p style={{ color: "#334155" }}>
-          {coords ? `${coords.lat}, ${coords.lon}` : "Pick a location"}
+          {coords ? `${coords.lat}, ${coords.lon}` : "Pick a location"} · crop: {crop}
         </p>
       </main>
     </div>
