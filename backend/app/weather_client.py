@@ -1,4 +1,4 @@
-import os, requests
+import requests
 from app import settings
 
 def get_current_weather(lat: float, lon: float):

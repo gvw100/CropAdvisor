@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import requests
 from app import weather_client as weather
+from app import geocode_client as geocode
 from app.advisory_generator import generate_advisory
 from app import settings
   
@@ -12,11 +12,15 @@ app = FastAPI(title="Weather-Based Crop Advisory")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Vite default port
+    allow_origins=["http://localhost:5173", "localhost:5173"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/locations")
+def locations(location: str):
+    return geocode.get_locations(location)
 
 @app.get("/advisory")
 def advisory(lat: float, lon: float):

@@ -1,4 +1,5 @@
 # Backend (Python / FastAPI)
+backend/venv
 backend/.venv
 backend/.env
 __pycache__
