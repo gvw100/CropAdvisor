@@ -16,11 +16,6 @@ def _is_kelvin(temp: float) -> bool:
     # crude but effective: typical outdoor temps won't exceed 200 if in °C; if > 200, assume Kelvin
     return temp is not None and temp > 200
 
-def _to_celsius(t: Optional[float]) -> Optional[float]:
-    if t is None:
-        return None
-    return t - 273.15 if _is_kelvin(t) else t
-
 def _mm(val: Optional[float]) -> float:
     return float(val or 0)
 
@@ -60,7 +55,7 @@ def _summarize_next_48h(forecast: Dict[str, Any]) -> Tuple[float, float, float, 
         if dt < now or dt > cutoff:   # skip past items and those beyond 48h
             continue
 
-        t = _to_celsius(_safe_get(it, "main", "temp"))
+        t = _safe_get(it, "main", "temp")
         if t is not None:
             temps.append(t)
 
@@ -104,7 +99,7 @@ def _daily_series_from_forecast(forecast: Dict[str, Any], days: int = 5) -> List
         # use local tz to bucket by calendar day
         local_day = datetime.fromtimestamp(dt, tz=tz).date().isoformat()
 
-        t = _to_celsius(_safe_get(it, "main", "temp"))
+        t = _safe_get(it, "main", "temp")
         pop = float(it.get("pop", 0.0) or 0.0)
         r3h = float(_safe_get(it, "rain", "3h", default=0.0) or 0.0)
         r1h = float(_safe_get(it, "rain", "1h", default=0.0) or 0.0)
@@ -140,7 +135,7 @@ def _build_advisories(current: Dict[str, Any], forecast: Dict[str, Any], crop: s
     tMax48, tMin48, windMax48, rainTotal48, popMax48 = _summarize_next_48h(forecast)
 
     # current snapshots
-    cur_temp = _to_celsius(_safe_get(current, "main", "temp"))
+    cur_temp = _safe_get(current, "main", "temp")
     rh_now = int(_safe_get(current, "main", "humidity", default=0) or 0)
     wind_now = float(_safe_get(current, "wind", "speed", default=0.0) or 0.0)
     rain1h_now = float(_safe_get(current, "rain", "1h", default=0.0) or 0.0)
@@ -238,8 +233,7 @@ def generate_advisory_payload(
       advisories: [ {id, type, severity, title, reason, action, tags[]} ]
     }
     """
-    # current snapshots (defensive about units/fields)
-    cur_temp = _to_celsius(_safe_get(current_weather, "main", "temp"))
+    cur_temp = _safe_get(current_weather, "main", "temp")
     cur_hum  = int(_safe_get(current_weather, "main", "humidity", default=0) or 0)
     cur_wind = float(_safe_get(current_weather, "wind", "speed", default=0.0) or 0.0)
     cur_rain1h = float(_safe_get(current_weather, "rain", "1h", default=0.0) or 0.0)

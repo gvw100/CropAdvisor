@@ -35,3 +35,7 @@ def advisory(lat: float, lon: float, crop: str):
         forecasted_weather=forecasted_weather,
         label=label,
     )
+
+@app.get("/forecast_chart")
+def forecast_chart(lat: float, lon: float):
+    return weather.get_forecast_for_chart(lat, lon)
