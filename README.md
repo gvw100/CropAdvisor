@@ -1,0 +1,1 @@
+A crop advisery site to allow farmers to gain insights about weather trends over the next few days. Weather data is used to also generate crop adviseries for the farmer's current location. The backend is developed with FastAPI and the front end is developed with React.js. 
