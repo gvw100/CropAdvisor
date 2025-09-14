@@ -3,7 +3,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
-const CROPS = ["corn", "soybeans", "wheat", "rice", "barley", "canola"] as const;
+const CROPS = ["Corn", "Soybeans", "Wheat", "Rice", "Barley", "Canola"] as const;
 export type Crop = (typeof CROPS)[number];
 
 export default function CropSelect({
