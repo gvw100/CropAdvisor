@@ -3,12 +3,13 @@ import "./App.css";
 import SearchBar from "./components/SearchBar";
 import CropSelect, { type Crop } from "./components/CropSelect";
 import { useNavigate } from "react-router-dom";
+import MapView from "./components/MapView";
 
 type Coords = { lat: number; lon: number };
 
 export default function App() {
   const [coords, setCoords] = useState<Coords | null>(null);
-  const [crop, setCrop] = useState<Crop>("corn");
+  const [crop, setCrop] = useState<Crop>("Corn");
   const navigate = useNavigate();
 
   function useMyLocation() {
@@ -106,9 +107,29 @@ export default function App() {
 
       <main style={{ padding: "16px", maxWidth: 1100, margin: "0 auto" }}>
         <p style={{ color: "#334155" }}>
-          {coords ? `${coords.lat}, ${coords.lon}` : "Pick a location"} · crop: {crop}
+          {coords ? `${coords.lat}, ${coords.lon}` : "Pick a location"} · Crop: {crop}
         </p>
       </main>
+
+      <div
+    style={{
+      marginTop: 16,
+      background: "#fff",
+      border: "1px solid #e5e7eb",
+      borderRadius: 12,
+      padding: 16,
+      color: "#1e293b",
+    }}
+  >
+    <h2 style={{ marginTop: 0, marginBottom: 12, color: "#0f172a" }}>Map</h2>
+    <MapView
+      lat={coords?.lat ?? null}
+      lon={coords?.lon ?? null}
+      label={coords ? "Selected location" : undefined}
+      height={360}
+      zoom={11}
+    />
+  </div>
     </div>
   );
 }
